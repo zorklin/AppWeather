@@ -23,6 +23,15 @@ namespace AppWeather.Presentation.ViewModels
         private readonly IExporter _exporter;
         private readonly IFileDialogService _fileDialogService;
         private ObservableCollection<WeatherGui> _weatherForecasts = new ObservableCollection<WeatherGui>();
+        public ObservableCollection<WeatherGui> WeatherForecasts
+        {
+            get => _weatherForecasts;
+            set
+            {
+                _weatherForecasts = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ICommand FetchFromServerCommand { get; }
         public ICommand SaveLocallyCommand { get; }
@@ -55,16 +64,6 @@ namespace AppWeather.Presentation.ViewModels
 
             CheckDatabaseConnectionAsync();
             _fileDialogService = fileDialogService;
-        }
-
-        public ObservableCollection<WeatherGui> WeatherForecasts
-        {
-            get => _weatherForecasts;
-            set
-            {
-                _weatherForecasts = value;
-                OnPropertyChanged();
-            }
         }
 
         private async void CheckDatabaseConnectionAsync()
@@ -128,22 +127,23 @@ namespace AppWeather.Presentation.ViewModels
                     .Where(f => float.TryParse(f.Pressure, out _))
                     .Average(f => float.Parse(f.Pressure));
 
+
                 var exportData = new ExportData
                 {
-                    Title = "Weather Report",
-                    Headers = new List<string> { "#", "Date", "Temperature", "Precipitation", "Pressure" },
+                    Title = "Звіт Погоди",
+                    Headers = new List<string> { "#", "Дата", "Температура", "Опади", "Тиск" },
                     Rows = WeatherForecasts.Select((forecast, index) => new List<string>
                     {
                         (index + 1).ToString(),
-                        forecast.Date,
+                        forecast.Weather_Date,
                         forecast.Temperature,
                         forecast.Precipitation,
                         forecast.Pressure
                     }).ToList(),
                     AdditionalValues = new List<string>
                     {
-                        $"Average Temperature: {avgTemp:F1} °C",
-                        $"Average Pressure: {avgPressure:F1} mmHg"
+                        $"Середня температура: {avgTemp:F1} °C",
+                        $"Середній тиск: {avgPressure:F1} mmHg"
                     }
                 };
 
@@ -166,5 +166,4 @@ namespace AppWeather.Presentation.ViewModels
             _navigationService.NavigateTo<AuthorizationWindow>();
         }
     }
-
 }

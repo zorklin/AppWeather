@@ -18,5 +18,17 @@ namespace AppWeather.Services.Implementations
             var window = _serviceProvider.GetRequiredService<TWindow>();
             window.ShowDialog();
         }
+
+        public void NavigateBack<TWindow>() where TWindow : Window
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is TWindow)
+                {
+                    window.Close();
+                    break;
+                }
+            }
+        }
     }
 }

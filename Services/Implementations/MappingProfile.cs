@@ -30,9 +30,9 @@ namespace AppWeather.Services.Implementations
         public WeatherMappingProfile()
         {
             CreateMap<Weather, WeatherGui>()
-                .ForMember(dest => dest.Date,
-                    opt => opt.MapFrom(src => src.Date != default
-                        ? src.Date.ToString("dd MMMM yyyy", new CultureInfo("uk-UA"))
+                .ForMember(dest => dest.Weather_Date,
+                    opt => opt.MapFrom(src => src.Weather_Date != default
+                        ? src.Weather_Date.ToString("dd MMMM yyyy", new CultureInfo("uk-UA"))
                         : ""))
                 .ForMember(dest => dest.Temperature,
                     opt => opt.MapFrom(src => src.Temperature.HasValue
@@ -48,9 +48,9 @@ namespace AppWeather.Services.Implementations
                         : ""));
 
             CreateMap<WeatherGui, Weather>()
-                .ForMember(dest => dest.Date,
-                    opt => opt.MapFrom(src => !string.IsNullOrWhiteSpace(src.Date)
-                        ? DateOnly.ParseExact(src.Date, "dd MMMM yyyy", new CultureInfo("uk-UA", false), DateTimeStyles.None)
+                .ForMember(dest => dest.Weather_Date,
+                    opt => opt.MapFrom(src => !string.IsNullOrWhiteSpace(src.Weather_Date)
+                        ? DateOnly.ParseExact(src.Weather_Date, "dd MMMM yyyy", new CultureInfo("uk-UA", false), DateTimeStyles.None)
                         : (DateOnly?)null))
                 .ForMember(dest => dest.Temperature,
                     opt => opt.MapFrom(src => !string.IsNullOrWhiteSpace(src.Temperature)

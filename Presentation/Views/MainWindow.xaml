@@ -20,7 +20,7 @@
 
         <DataGrid ItemsSource="{Binding WeatherForecasts}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="10" Grid.Row="1">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Дата" Binding="{Binding Date}" Width="*" />
+                <DataGridTextColumn Header="Дата" Binding="{Binding Weather_Date}" Width="*" />
                 <DataGridTextColumn Header="Температура" Binding="{Binding Temperature}" Width="*" />
                 <DataGridTextColumn Header="Опади" Binding="{Binding Precipitation}" Width="*" />
                 <DataGridTextColumn Header="Тиск" Binding="{Binding Pressure}" Width="*" />

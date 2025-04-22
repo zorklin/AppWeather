@@ -12,6 +12,6 @@ namespace AppWeather.Models
 
         [Required(ErrorMessage = "Password is required")]
         [MaxLength(50, ErrorMessage = "Password cannot exceed 50 characters")]
-        public string? Password { get; set; }
+        public string? Admin_Password { get; set; }
     }
 }

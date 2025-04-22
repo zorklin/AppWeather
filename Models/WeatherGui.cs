@@ -2,7 +2,7 @@
 {
     public class WeatherGui
     {
-        public string Date { get; set; } = string.Empty;
+        public string Weather_Date { get; set; } = string.Empty;
         public string Temperature { get; set; } = string.Empty;
         public string Precipitation { get; set; } = string.Empty;
         public string Pressure { get; set; } = string.Empty;

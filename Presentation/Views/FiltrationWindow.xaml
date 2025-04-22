@@ -1,12 +1,40 @@
 ﻿<Window x:Class="AppWeather.Presentation.Views.FiltrationWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AppWeather.Presentation.Views"
-        mc:Ignorable="d"
-        Title="FiltrationWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Фільтрація" Height="350" Width="600">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Vertical" Grid.Row="0" Margin="10">
+            <TextBlock Text="Початкова дата:"/>
+            <DatePicker SelectedDate="{Binding FilterGui.StartDate, Mode=TwoWay}" />
+
+            <TextBlock Text="Кінцева дата:"/>
+            <DatePicker SelectedDate="{Binding FilterGui.EndDate, Mode=TwoWay}" />
+
+            <TextBlock Text="Мінімальна температура:"/>
+            <TextBox Text="{Binding FilterGui.MinTemperature, Mode=TwoWay}" />
+
+            <TextBlock Text="Максимальна температура:"/>
+            <TextBox Text="{Binding FilterGui.MaxTemperature, Mode=TwoWay}" />
+
+            <TextBlock Text="Опади:"/>
+            <ComboBox SelectedValue="{Binding FilterGui.Precipitation, Mode=TwoWay}" IsEditable="False">
+                <ComboBoxItem Content="Так" />
+                <ComboBoxItem Content="Ні" />
+                <ComboBoxItem Content="" />
+            </ComboBox>
+
+            <TextBlock Text="Мінімальний тиск:"/>
+            <TextBox Text="{Binding FilterGui.MinPressure, Mode=TwoWay}" />
+
+            <TextBlock Text="Максимальний тиск:"/>
+            <TextBox Text="{Binding FilterGui.MaxPressure, Mode=TwoWay}" />
+        </StackPanel>
+
+        <Button Content="Фільтрувати" Command="{Binding FilterCommand}" Grid.Row="1" HorizontalAlignment="Right" Margin="0,10,0,0" />
     </Grid>
 </Window>

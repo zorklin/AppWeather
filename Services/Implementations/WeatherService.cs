@@ -31,7 +31,7 @@ namespace AppWeather.Services.Implementations
 
         public async Task<bool> AddAsync(Weather weather)
         {
-            var exists = await _context.Weather.AnyAsync(w => w.Date == weather.Date);
+            var exists = await _context.Weather.AnyAsync(w => w.Weather_Date == weather.Weather_Date);
             if (exists) return false;
 
             _context.Weather.Add(weather);
@@ -41,7 +41,7 @@ namespace AppWeather.Services.Implementations
 
         public async Task<bool> UpdateAsync(Weather weather)
         {
-            var existing = await _context.Weather.FirstOrDefaultAsync(w => w.Date == weather.Date);
+            var existing = await _context.Weather.FirstOrDefaultAsync(w => w.Weather_Date == weather.Weather_Date);
             if (existing == null) return false;
 
             existing.Temperature = weather.Temperature;
@@ -54,7 +54,7 @@ namespace AppWeather.Services.Implementations
 
         public async Task<bool> DeleteAsync(DateOnly date)
         {
-            var existing = await _context.Weather.FirstOrDefaultAsync(w => w.Date == date);
+            var existing = await _context.Weather.FirstOrDefaultAsync(w => w.Weather_Date == date);
             if (existing == null) return false;
 
             _context.Weather.Remove(existing);
@@ -67,10 +67,10 @@ namespace AppWeather.Services.Implementations
             var query = _context.Weather.AsQueryable();
 
             if (filter.StartDate.HasValue)
-                query = query.Where(w => w.Date >= filter.StartDate);
+                query = query.Where(w => w.Weather_Date >= filter.StartDate.Value);
 
             if (filter.EndDate.HasValue)
-                query = query.Where(w => w.Date <= filter.EndDate);
+                query = query.Where(w => w.Weather_Date <= filter.EndDate);
 
             if (filter.MinTemperature.HasValue)
                 query = query.Where(w => w.Temperature >= filter.MinTemperature);
@@ -87,6 +87,7 @@ namespace AppWeather.Services.Implementations
             if (filter.Precipitation.HasValue)
                 query = query.Where(w => w.Precipitation == filter.Precipitation);
 
+            var sql = query.ToQueryString();
             return await query.ToListAsync();
         }
     }

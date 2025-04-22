@@ -17,7 +17,7 @@ namespace AppWeather.Services.Implementations
         public async Task<bool> IsAdminValidAsync(Admin admin)
         {
             return await _context.Admins
-                .AnyAsync(a => a.Username == admin.Username && a.Password == admin.Password);
+                .AnyAsync(a => a.Username == admin.Username && a.Admin_Password == admin.Admin_Password);
         }
     }
 }

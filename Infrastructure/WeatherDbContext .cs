@@ -23,7 +23,7 @@ namespace AppWeather.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Weather>()
-                .HasIndex(w => w.Date)
+                .HasIndex(w => w.Weather_Date)
                 .IsUnique();
         }
     }

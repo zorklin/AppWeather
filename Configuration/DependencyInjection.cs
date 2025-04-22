@@ -41,7 +41,7 @@ namespace AppWeather
             services.AddTransient<FiltrationWindow>();
 
             // Register ViewModels
-            services.AddTransient<MainViewModel>();
+            services.AddSingleton<MainViewModel>();
             services.AddTransient<AuthorizationViewModel>();
             services.AddTransient<AddDataViewModel>();
             services.AddTransient<ChangeDataViewModel>();
