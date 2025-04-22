@@ -1,7 +1,7 @@
 ﻿namespace AppWeather.Services.Interfaces
 {
-    interface IFileDialogService
+    public interface IFileDialogService
     {
-        string ShowSaveDialog(string title, string filter, string defaultExt);
+        string? ShowSaveDialog(string title, string filter, string defaultExt);
     }
 }

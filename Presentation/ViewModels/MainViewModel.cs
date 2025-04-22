@@ -21,6 +21,7 @@ namespace AppWeather.Presentation.ViewModels
         private readonly IMessageService _messageService;
         private readonly IWeatherMapper _weatherMapper;
         private readonly IExporter _exporter;
+        private readonly IFileDialogService _fileDialogService;
         private ObservableCollection<WeatherGui> _weatherForecasts = new ObservableCollection<WeatherGui>();
 
         public ICommand FetchFromServerCommand { get; }
@@ -34,7 +35,8 @@ namespace AppWeather.Presentation.ViewModels
             INavigationService navigationService,
             IMessageService messageService,
             IWeatherMapper weatherMapper,
-            IExporter exporter)
+            IExporter exporter,
+            IFileDialogService fileDialogService)
         {
             _weatherService = weatherService ?? throw new ArgumentNullException(nameof(weatherService));
             _adminService = adminService ?? throw new ArgumentNullException(nameof(adminService));
@@ -42,6 +44,7 @@ namespace AppWeather.Presentation.ViewModels
             _messageService = messageService ?? throw new ArgumentNullException(nameof(messageService));
             _weatherMapper = weatherMapper ?? throw new ArgumentNullException(nameof(weatherMapper));
             _exporter = exporter ?? throw new ArgumentNullException(nameof(exporter));
+            _fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
 
             WeatherForecasts = new ObservableCollection<WeatherGui>();
 
@@ -51,6 +54,7 @@ namespace AppWeather.Presentation.ViewModels
             AuthorizationCommand = new RelayCommand(_ => OpenAuthorizationWindow());
 
             CheckDatabaseConnectionAsync();
+            _fileDialogService = fileDialogService;
         }
 
         public ObservableCollection<WeatherGui> WeatherForecasts
@@ -109,8 +113,7 @@ namespace AppWeather.Presentation.ViewModels
         {
             try
             {
-                var fileDialogService = new FileDialogService();
-                var filePath = fileDialogService.ShowSaveDialog("Save File", "Word Documents (*.docx)|*.docx", ".docx");
+                var filePath = _fileDialogService.ShowSaveDialog("Save File", "Word Documents (*.docx)|*.docx", ".docx");
                 if (string.IsNullOrEmpty(filePath))
                 {
                     _messageService.ShowMessage("Операція збереження скасована.", "Інформація");
@@ -125,9 +128,26 @@ namespace AppWeather.Presentation.ViewModels
                     .Where(f => float.TryParse(f.Pressure, out _))
                     .Average(f => float.Parse(f.Pressure));
 
-                var weatherData = WeatherForecasts.ToList();
+                var exportData = new ExportData
+                {
+                    Title = "Weather Report",
+                    Headers = new List<string> { "#", "Date", "Temperature", "Precipitation", "Pressure" },
+                    Rows = WeatherForecasts.Select((forecast, index) => new List<string>
+                    {
+                        (index + 1).ToString(),
+                        forecast.Date,
+                        forecast.Temperature,
+                        forecast.Precipitation,
+                        forecast.Pressure
+                    }).ToList(),
+                    AdditionalValues = new List<string>
+                    {
+                        $"Average Temperature: {avgTemp:F1} °C",
+                        $"Average Pressure: {avgPressure:F1} mmHg"
+                    }
+                };
 
-                _exporter.Export(weatherData, filePath, avgTemp, avgPressure);
+                _exporter.Export(exportData, filePath);
                 _messageService.ShowMessage("Дані успішно збережено локально.", "Успіх");
             }
             catch (Exception ex)

@@ -1,47 +1,94 @@
-﻿// OpenXML SDK + Extensions
-
+﻿using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using AppWeather.Models;
-using Xceed.Words.NET;
-using Xceed.Document.NET;
 using AppWeather.Services.Interfaces;
 
 namespace AppWeather.Services.Implementations
 {
     public class DocxExporter : IExporter
     {
-        private readonly IWeatherMapper _mapper;
-        public DocxExporter(IWeatherMapper mapper)
+        private const int TotalTableWidth = 5000;
+        private const int BorderSize = 6;
+        private const string HeadingFontSize = "32";
+        private const string DefaultFontSize = "24";
+
+        public void Export(ExportData data, string filePath)
         {
-            _mapper = mapper;
+            using var doc = WordprocessingDocument.Create(filePath, DocumentFormat.OpenXml.WordprocessingDocumentType.Document);
+            var main = doc.AddMainDocumentPart();
+            main.Document = new Document(new Body());
+            var body = main.Document.Body ?? throw new InvalidOperationException("Не вдалося створити Body у DOCX-документі.");
+
+            if (!string.IsNullOrWhiteSpace(data.Title))
+                body.Append(MakeParagraph(data.Title, bold: true, size: HeadingFontSize));
+
+            if (data.Headers.Count > 0 && data.Rows.Count > 0)
+                body.Append(CreateTable(data.Headers, data.Rows));
+
+            foreach (var value in data.AdditionalValues)
+                body.Append(MakeParagraph(value));
+
+            main.Document.Save();
         }
-        public void Export(List<WeatherGui> viewModelData, string filePath, float avgTemp, float avgPressure)
+
+        private Table CreateTable(List<string> headers, List<List<string>> rows)
         {
-            using var doc = DocX.Create(filePath);
-            doc.InsertParagraph("Weather").FontSize(16).Bold();
+            var table = new Table(
+                new TableProperties(
+                    new TableWidth { Width = TotalTableWidth.ToString(), Type = TableWidthUnitValues.Pct },
+                    CreateStandardBorders()
+                )
+            );
 
-            var table = doc.AddTable(viewModelData.Count + 1, 5);
-            table.Design = TableDesign.MediumGrid1Accent2;
+            int columnCount = headers.Count;
+            int columnWidth = TotalTableWidth / columnCount;
 
-            table.Rows[0].Cells[0].Paragraphs[0].Append("#");
-            table.Rows[0].Cells[1].Paragraphs[0].Append("Date");
-            table.Rows[0].Cells[2].Paragraphs[0].Append("Temperature");
-            table.Rows[0].Cells[3].Paragraphs[0].Append("Precipitation");
-            table.Rows[0].Cells[4].Paragraphs[0].Append("Pressure");
+            table.Append(MakeRowWithWidths(columnWidth, headers.ToArray()));
 
-            for (int i = 0; i < viewModelData.Count; i++)
+            foreach (var row in rows)
             {
-                var forecast = viewModelData[i];
-                table.Rows[i + 1].Cells[0].Paragraphs[0].Append((i + 1).ToString());
-                table.Rows[i + 1].Cells[1].Paragraphs[0].Append(forecast.Date ?? "");
-                table.Rows[i + 1].Cells[2].Paragraphs[0].Append(forecast.Temperature ?? "");
-                table.Rows[i + 1].Cells[3].Paragraphs[0].Append(forecast.Precipitation ?? "");
-                table.Rows[i + 1].Cells[4].Paragraphs[0].Append(forecast.Pressure ?? "");
+                table.Append(MakeRowWithWidths(columnWidth, row.ToArray()));
             }
 
-            doc.InsertParagraph($"Average Temperature: {avgTemp:F1} °C");
-            doc.InsertParagraph($"Average Pressure: {avgPressure:F0} mmHg");
+            return table;
+        }
 
-            doc.Save();
+        private TableBorders CreateStandardBorders() => new TableBorders(
+            new TopBorder { Val = BorderValues.Single, Size = BorderSize },
+            new BottomBorder { Val = BorderValues.Single, Size = BorderSize },
+            new LeftBorder { Val = BorderValues.Single, Size = BorderSize },
+            new RightBorder { Val = BorderValues.Single, Size = BorderSize },
+            new InsideHorizontalBorder { Val = BorderValues.Single, Size = BorderSize },
+            new InsideVerticalBorder { Val = BorderValues.Single, Size = BorderSize }
+        );
+
+        private Paragraph MakeParagraph(string text, bool bold = false, string size = DefaultFontSize)
+        {
+            var runProps = new RunProperties();
+            if (bold) {
+                runProps.Append(new Bold());
+            }
+            runProps.Append(new FontSize { Val = size });
+
+            return new Paragraph(
+                new Run(runProps, new Text(text))
+            );
+        }
+
+        private TableRow MakeRowWithWidths(int colWidth, params string[] cells)
+        {
+            var row = new TableRow();
+            foreach (var cellText in cells)
+            {
+                var cell = new TableCell(
+                    new TableCellProperties(
+                        new TableCellWidth { Type = TableWidthUnitValues.Pct, Width = colWidth.ToString() }
+                    ),
+                    new Paragraph(new Run(new Text(cellText)))
+                );
+                row.Append(cell);
+            }
+            return row;
         }
     }
 }

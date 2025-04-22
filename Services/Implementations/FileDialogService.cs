@@ -5,7 +5,7 @@ namespace AppWeather.Services.Implementations
 {
     class FileDialogService : IFileDialogService
     {
-        public string ShowSaveDialog(string title, string filter, string defaultExt)
+        public string? ShowSaveDialog(string title, string filter, string defaultExt)
         {
             var dialog = new SaveFileDialog
             {
