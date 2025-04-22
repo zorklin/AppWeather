@@ -10,13 +10,20 @@ namespace AppWeather
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
+            try
+            {
+                base.OnStartup(e);
 
-            var serviceCollection = new ServiceCollection();
-            ServiceProvider = DependencyInjection.ConfigureServices(serviceCollection).BuildServiceProvider();
-
-            var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
+                var serviceCollection = new ServiceCollection();
+                ServiceProvider = DependencyInjection.ConfigureServices(serviceCollection).BuildServiceProvider();
+                var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+                mainWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred during startup: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+            }
         }
     }
 }

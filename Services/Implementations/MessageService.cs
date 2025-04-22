@@ -1,12 +1,8 @@
 ﻿using System.Windows;
+using AppWeather.Services.Interfaces;
 
-namespace AppWeather.Services
+namespace AppWeather.Services.Implementations
 {
-    public interface IMessageService
-    {
-        void ShowMessage(string message, string title);
-    }
-
     class MessageService : IMessageService
     {
         public void ShowMessage(string message, string title)

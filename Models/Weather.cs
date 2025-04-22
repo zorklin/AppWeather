@@ -1,8 +1,9 @@
 ﻿namespace AppWeather.Models
 {
-    public class WeatherForecast
+    public class Weather
     {
-        public DateOnly? Date { get; set; }
+        public Guid Id { get; set; }
+        public DateOnly Date { get; set; }
         public float? Temperature { get; set; }
         public bool? Precipitation { get; set; }
         public float? Pressure { get; set; }

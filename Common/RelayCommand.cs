@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace AppWeather.Helpers
+namespace AppWeather.Common
 {
     public class RelayCommand : ICommand
     {

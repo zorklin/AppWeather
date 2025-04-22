@@ -5,9 +5,10 @@ namespace AppWeather.Presentation.Views
 {
     public partial class FiltrationWindow : Window
     {
-        public FiltrationWindow()
+        public FiltrationWindow(/*FiltrationViewModel viewModel*/)
         {
             InitializeComponent();
+            //DataContext = viewModel;
         }
     }
 }

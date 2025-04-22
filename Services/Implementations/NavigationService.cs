@@ -1,13 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
+using AppWeather.Services.Interfaces;
 
-namespace AppWeather.Services
+namespace AppWeather.Services.Implementations
 {
-    public interface INavigationService
-    {
-        void NavigateTo<TWindow>() where TWindow : Window;
-    }
-
     public class NavigationService : INavigationService
     {
         private readonly IServiceProvider _serviceProvider;

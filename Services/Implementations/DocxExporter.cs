@@ -1,13 +1,12 @@
-﻿using AppWeather.Models;
+﻿// OpenXML SDK + Extensions
+
+using AppWeather.Models;
 using Xceed.Words.NET;
 using Xceed.Document.NET;
+using AppWeather.Services.Interfaces;
 
-namespace AppWeather.Services
+namespace AppWeather.Services.Implementations
 {
-    public interface IExporter
-    {
-        void Export(List<WeatherForecast> data, string filePath);
-    }
     public class DocxExporter : IExporter
     {
         private readonly IWeatherMapper _mapper;
@@ -15,15 +14,10 @@ namespace AppWeather.Services
         {
             _mapper = mapper;
         }
-        public void Export(List<WeatherForecast> data, string filePath)
+        public void Export(List<WeatherGui> viewModelData, string filePath, float avgTemp, float avgPressure)
         {
-            var avgTemp = data.Where(f => f.Temperature.HasValue).Average(f => f.Temperature) ?? 0;
-            var avgPressure = data.Where(f => f.Pressure.HasValue).Average(f => f.Pressure) ?? 0;
-
-            var viewModelData = data.Select(forecast => _mapper.MapToViewModel(forecast)).ToList();
-
             using var doc = DocX.Create(filePath);
-            doc.InsertParagraph("Weather Forecast").FontSize(16).Bold();
+            doc.InsertParagraph("Weather").FontSize(16).Bold();
 
             var table = doc.AddTable(viewModelData.Count + 1, 5);
             table.Design = TableDesign.MediumGrid1Accent2;

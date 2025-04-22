@@ -4,23 +4,24 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using AppWeather.Helpers;
+using AppWeather.Common;
 using AppWeather.Models;
 using AppWeather.Presentation.Views;
-using AppWeather.Services;
-using AppWeather.Utilities;
+using AppWeather.Services.Implementations;
+using AppWeather.Services.Interfaces;
 using AutoMapper;
 
 namespace AppWeather.Presentation.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IAdminService _adminService;
+        private readonly IWeatherService _weatherService;
         private readonly INavigationService _navigationService;
         private readonly IMessageService _messageService;
         private readonly IWeatherMapper _weatherMapper;
         private readonly IExporter _exporter;
-        private ObservableCollection<WeatherForecastViewModel> _weatherForecasts = new ObservableCollection<WeatherForecastViewModel>();
+        private ObservableCollection<WeatherGui> _weatherForecasts = new ObservableCollection<WeatherGui>();
 
         public ICommand FetchFromServerCommand { get; }
         public ICommand SaveLocallyCommand { get; }
@@ -28,19 +29,21 @@ namespace AppWeather.Presentation.ViewModels
         public ICommand AuthorizationCommand { get; }
 
         public MainViewModel(
+            IAdminService adminService,
+            IWeatherService weatherService,
             INavigationService navigationService,
             IMessageService messageService,
             IWeatherMapper weatherMapper,
-            IExporter exporter,
-            DatabaseService databaseService)
+            IExporter exporter)
         {
+            _weatherService = weatherService ?? throw new ArgumentNullException(nameof(weatherService));
+            _adminService = adminService ?? throw new ArgumentNullException(nameof(adminService));
             _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
             _messageService = messageService ?? throw new ArgumentNullException(nameof(messageService));
             _weatherMapper = weatherMapper ?? throw new ArgumentNullException(nameof(weatherMapper));
             _exporter = exporter ?? throw new ArgumentNullException(nameof(exporter));
-            _databaseService = databaseService ?? throw new ArgumentNullException(nameof(databaseService));
 
-            WeatherForecasts = new ObservableCollection<WeatherForecastViewModel>();
+            WeatherForecasts = new ObservableCollection<WeatherGui>();
 
             FetchFromServerCommand = new RelayCommand(_ => FetchFromServer());
             SaveLocallyCommand = new RelayCommand(_ => SaveLocally());
@@ -50,13 +53,13 @@ namespace AppWeather.Presentation.ViewModels
             CheckDatabaseConnectionAsync();
         }
 
-        public ObservableCollection<WeatherForecastViewModel> WeatherForecasts
+        public ObservableCollection<WeatherGui> WeatherForecasts
         {
             get => _weatherForecasts;
             set
             {
                 _weatherForecasts = value;
-                //OnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -64,25 +67,26 @@ namespace AppWeather.Presentation.ViewModels
         {
             while (true)
             {
-                if (_databaseService.IsConnectionAvailable())
+                bool isConnected = await _weatherService.CheckConnectionAsync();
+                if (isConnected)
                 {
-                    _messageService.ShowMessage("Підключення до бази даних встановлено.", "Успіх");
                     FetchFromServer();
+                    _messageService.ShowMessage("Підключення до бази даних встановлено.", "Успіх");
                     break;
                 }
                 else
                 {
-                    _messageService.ShowMessage("Не вдалося підключитися до бази даних. Спроба знову через 10 секунд.", "Помилка");
-                    await Task.Delay(10000);
+                    _messageService.ShowMessage("Не вдалося підключитися до бази даних. Натисність щоб спробувати знову.", "Помилка");
+                    await Task.Delay(5000);
                 }
             }
         }
 
-        private void FetchFromServer()
+        private async void FetchFromServer()
         {
             try
             {
-                var forecasts = _databaseService.GetAllForecasts();
+                var forecasts = await _weatherService.GetAllAsync();
                 var viewModelForecasts = forecasts.Select(forecast => _weatherMapper.MapToViewModel(forecast)).ToList();
 
                 Application.Current.Dispatcher.Invoke(() =>
@@ -96,13 +100,40 @@ namespace AppWeather.Presentation.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Помилка при отриманні даних із сервера: {ex.Message}", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                _messageService.ShowMessage($"Помилка при отриманні даних із сервера: {ex.Message}", "Помилка");
             }
         }
 
+
         private void SaveLocally()
         {
-            //_exporter.Export(WeatherForecasts.ToList(), "weather_forecast.docx");  
+            try
+            {
+                var fileDialogService = new FileDialogService();
+                var filePath = fileDialogService.ShowSaveDialog("Save File", "Word Documents (*.docx)|*.docx", ".docx");
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    _messageService.ShowMessage("Операція збереження скасована.", "Інформація");
+                    return;
+                }
+
+                var avgTemp = WeatherForecasts
+                    .Where(f => float.TryParse(f.Temperature, out _))
+                    .Average(f => float.Parse(f.Temperature));
+
+                var avgPressure = WeatherForecasts
+                    .Where(f => float.TryParse(f.Pressure, out _))
+                    .Average(f => float.Parse(f.Pressure));
+
+                var weatherData = WeatherForecasts.ToList();
+
+                _exporter.Export(weatherData, filePath, avgTemp, avgPressure);
+                _messageService.ShowMessage("Дані успішно збережено локально.", "Успіх");
+            }
+            catch (Exception ex)
+            {
+                _messageService.ShowMessage($"Помилка при збереженні даних: {ex.Message}", "Помилка");
+            }
         }
 
         private void OpenSearchWindow()
