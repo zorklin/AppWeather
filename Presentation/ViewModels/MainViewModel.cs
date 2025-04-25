@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Input;
 using AppWeather.Common;
 using AppWeather.Models;
 using AppWeather.Presentation.Views;
-using AppWeather.Services.Implementations;
 using AppWeather.Services.Interfaces;
-using AutoMapper;
-using CommunityToolkit.Mvvm;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -19,7 +12,6 @@ namespace AppWeather.Presentation.ViewModels
 {
     public partial class MainViewModel : ObservableRecipient
     {
-        private readonly IAdminService _adminService;
         private readonly IWeatherService _weatherService;
         private readonly INavigationService _navigationService;
         private readonly IMessageService _messageService;
@@ -35,7 +27,6 @@ namespace AppWeather.Presentation.ViewModels
         private bool isAdmin;
 
         public MainViewModel(
-            IAdminService adminService,
             IWeatherService weatherService,
             INavigationService navigationService,
             IMessageService messageService,
@@ -45,7 +36,6 @@ namespace AppWeather.Presentation.ViewModels
             IUserSessionService sessionService)
         {
             _weatherService = weatherService ?? throw new ArgumentNullException(nameof(weatherService));
-            _adminService = adminService ?? throw new ArgumentNullException(nameof(adminService));
             _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
             _messageService = messageService ?? throw new ArgumentNullException(nameof(messageService));
             _weatherMapper = weatherMapper ?? throw new ArgumentNullException(nameof(weatherMapper));

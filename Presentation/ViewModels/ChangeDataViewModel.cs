@@ -40,17 +40,26 @@ public partial class ChangeDataViewModel : ObservableObject
     [RelayCommand]
     private async Task ChangeAsync()
     {
-        string? dateErr = null;
-        string? tempErr = null;
-        string? pressureErr = null;
-        string? precipErr = null;
-
-        if (!_parserService.TryParseDate(Date, out var parsedDate, out dateErr) ||
-            !_parserService.TryParseFloat(Temperature, out var parsedTemp, out tempErr) ||
-            !_parserService.TryParseFloat(Pressure, out var parsedPressure, out pressureErr) ||
-            !_parserService.TryParseBool(Precipitation, out var parsedPrecip, out precipErr))
+        if (!_parserService.TryParseRequiredDate(Date, out var parsedDate, out var dateErr))
         {
-            _messageService.ShowMessage(dateErr ?? tempErr ?? pressureErr ?? precipErr!, "Помилка");
+            _messageService.ShowMessage(dateErr!, "Помилка в полі дати");
+            return;
+        }
+
+        _parserService.TryParseNullableFloat(Temperature, out var parsedTemp, out var tempErr);
+        _parserService.TryParseNullableFloat(Pressure, out var parsedPressure, out var pressureErr);
+        _parserService.TryParseNullableBool(Precipitation, out var parsedPrecip, out var precipErr);
+
+        if (parsedTemp is null && parsedPressure is null && parsedPrecip is null)
+        {
+            _messageService.ShowMessage("Вкажіть хоча б одне з полів: температура, тиск або опади.", "Помилка");
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(tempErr) || !string.IsNullOrWhiteSpace(pressureErr) || !string.IsNullOrWhiteSpace(precipErr))
+        {
+            var error = tempErr ?? pressureErr ?? precipErr;
+            _messageService.ShowMessage(error!, "Помилка у введених значеннях");
             return;
         }
 
@@ -75,25 +84,25 @@ public partial class ChangeDataViewModel : ObservableObject
 
     partial void OnDateChanged(string value)
     {
-        _parserService.TryParseDate(value, out _, out var error);
+        _parserService.TryParseRequiredDate(value, out _, out var error);
         DateError = error;
     }
 
     partial void OnTemperatureChanged(string value)
     {
-        _parserService.TryParseFloat(value, out _, out var error);
+        _parserService.TryParseNullableFloat(value, out _, out var error);
         TemperatureError = error;
     }
 
     partial void OnPressureChanged(string value)
     {
-        _parserService.TryParseFloat(value, out _, out var error);
+        _parserService.TryParseNullableFloat(value, out _, out var error);
         PressureError = error;
     }
 
     partial void OnPrecipitationChanged(string value)
     {
-        _parserService.TryParseBool(value, out _, out var error);
+        _parserService.TryParseNullableBool(value, out _, out var error);
         PrecipitationError = error;
     }
 }

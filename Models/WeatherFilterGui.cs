@@ -2,12 +2,12 @@
 {
     public class WeatherFilterGui
     {
-        public DateTime? StartDate { get; set; } = null;
-        public DateTime? EndDate { get; set; } = null;
-        public float? MinPressure { get; set; } = null;
-        public float? MaxPressure { get; set; } = null;
-        public string? Precipitation { get; set; } = null;
-        public float? MinTemperature { get; set; } = null;
-        public float? MaxTemperature { get; set; } = null;
+        public string StartDate { get; set; } = "";
+        public string EndDate { get; set; } = "";
+        public string MinPressure { get; set; } = "";
+        public string MaxPressure { get; set; } = "";
+        public string Precipitation { get; set; } = "";
+        public string MinTemperature { get; set; } = "";
+        public string MaxTemperature { get; set; } = "";
     }
 }

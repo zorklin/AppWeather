@@ -32,7 +32,7 @@ namespace AppWeather.Presentation.ViewModels
         [RelayCommand]
         private async Task DeleteAsync()
         {
-            if (!_parserService.TryParseDate(Date, out var parsedDate, out var error))
+            if (!_parserService.TryParseRequiredDate(Date, out var parsedDate, out var error))
             {
                 DateError = error;
                 return;
@@ -51,7 +51,7 @@ namespace AppWeather.Presentation.ViewModels
 
         partial void OnDateChanged(string value)
         {
-            _parserService.TryParseDate(value, out _, out var error);
+            _parserService.TryParseRequiredDate(value, out _, out var error);
             DateError = error;
         }
     }
