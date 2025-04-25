@@ -10,10 +10,14 @@ using AppWeather.Presentation.Views;
 using AppWeather.Services.Implementations;
 using AppWeather.Services.Interfaces;
 using AutoMapper;
+using CommunityToolkit.Mvvm;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace AppWeather.Presentation.ViewModels
 {
-    public class MainViewModel : BaseViewModel
+    public partial class MainViewModel : ObservableRecipient
     {
         private readonly IAdminService _adminService;
         private readonly IWeatherService _weatherService;
@@ -22,21 +26,13 @@ namespace AppWeather.Presentation.ViewModels
         private readonly IWeatherMapper _weatherMapper;
         private readonly IExporter _exporter;
         private readonly IFileDialogService _fileDialogService;
-        private ObservableCollection<WeatherGui> _weatherForecasts = new ObservableCollection<WeatherGui>();
-        public ObservableCollection<WeatherGui> WeatherForecasts
-        {
-            get => _weatherForecasts;
-            set
-            {
-                _weatherForecasts = value;
-                OnPropertyChanged();
-            }
-        }
+        private readonly IUserSessionService _userSessionService;
 
-        public ICommand FetchFromServerCommand { get; }
-        public ICommand SaveLocallyCommand { get; }
-        public ICommand SearchCommand { get; }
-        public ICommand AuthorizationCommand { get; }
+        [ObservableProperty]
+        private ObservableCollection<WeatherGui> _weatherForecasts = new ObservableCollection<WeatherGui>();
+
+        [ObservableProperty]
+        private bool isAdmin;
 
         public MainViewModel(
             IAdminService adminService,
@@ -45,7 +41,8 @@ namespace AppWeather.Presentation.ViewModels
             IMessageService messageService,
             IWeatherMapper weatherMapper,
             IExporter exporter,
-            IFileDialogService fileDialogService)
+            IFileDialogService fileDialogService,
+            IUserSessionService sessionService)
         {
             _weatherService = weatherService ?? throw new ArgumentNullException(nameof(weatherService));
             _adminService = adminService ?? throw new ArgumentNullException(nameof(adminService));
@@ -54,16 +51,18 @@ namespace AppWeather.Presentation.ViewModels
             _weatherMapper = weatherMapper ?? throw new ArgumentNullException(nameof(weatherMapper));
             _exporter = exporter ?? throw new ArgumentNullException(nameof(exporter));
             _fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
+            _userSessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
 
             WeatherForecasts = new ObservableCollection<WeatherGui>();
 
-            FetchFromServerCommand = new RelayCommand(_ => FetchFromServer());
-            SaveLocallyCommand = new RelayCommand(_ => SaveLocally());
-            SearchCommand = new RelayCommand(_ => OpenSearchWindow());
-            AuthorizationCommand = new RelayCommand(_ => OpenAuthorizationWindow());
+            IsAdmin = _userSessionService.IsAdmin;
+
+            WeakReferenceMessenger.Default.Register<UserSessionChangedMessage>(this, (r, m) =>
+            {
+                IsAdmin = m.Value.IsAdmin;
+            });
 
             CheckDatabaseConnectionAsync();
-            _fileDialogService = fileDialogService;
         }
 
         private async void CheckDatabaseConnectionAsync()
@@ -73,7 +72,7 @@ namespace AppWeather.Presentation.ViewModels
                 bool isConnected = await _weatherService.CheckConnectionAsync();
                 if (isConnected)
                 {
-                    FetchFromServer();
+                    await FetchFromServer();
                     _messageService.ShowMessage("Підключення до бази даних встановлено.", "Успіх");
                     break;
                 }
@@ -85,7 +84,8 @@ namespace AppWeather.Presentation.ViewModels
             }
         }
 
-        private async void FetchFromServer()
+        [RelayCommand]
+        private async Task FetchFromServer()
         {
             try
             {
@@ -108,6 +108,7 @@ namespace AppWeather.Presentation.ViewModels
         }
 
 
+        [RelayCommand]
         private void SaveLocally()
         {
             try
@@ -156,14 +157,34 @@ namespace AppWeather.Presentation.ViewModels
             }
         }
 
+        [RelayCommand]
         private void OpenSearchWindow()
         {
             _navigationService.NavigateTo<FiltrationWindow>();
         }
 
+        [RelayCommand]
         private void OpenAuthorizationWindow()
         {
             _navigationService.NavigateTo<AuthorizationWindow>();
+        }
+
+        [RelayCommand]
+        private void AddData()
+        {
+            _navigationService.NavigateTo<AddDataWindow>();
+        }
+
+        [RelayCommand]
+        private void ChangeData()
+        {
+            _navigationService.NavigateTo<ChangeDataWindow>();
+        }
+
+        [RelayCommand]
+        private void DeleteData()
+        {
+            _navigationService.NavigateTo<DeleteDataWindow>();
         }
     }
 }

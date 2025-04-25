@@ -18,21 +18,20 @@ namespace AppWeather
             var connectionString = "Server=localhost;Database=WEATHER_DB;Uid=root;Pwd=root;Port=3307;Connection Timeout=10;";
             //var connectionString = "Server = localhost; Database = weather_db; Uid = root; Pwd = root; Port = 3307";
 
-            // Register DbContext and database services
             services.AddDbContext<WeatherDbContext>(options =>
                 options.UseMySQL(connectionString));
             
             services.AddTransient<IWeatherService, WeatherService>();
             services.AddTransient<IAdminService, AdminService>();
 
-            // Register services
             services.AddSingleton<IMessageService, MessageService>();
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<IFileDialogService, FileDialogService>();
             services.AddSingleton<IWeatherMapper, WeatherMapper>();
             services.AddSingleton<IExporter, DocxExporter>();
+            services.AddSingleton<IUserSessionService, UserSessionService>();
+            services.AddSingleton<IInputParserService, InputParserService>();
 
-            // Register windows
             services.AddTransient<MainWindow>();
             services.AddTransient<AuthorizationWindow>();
             services.AddTransient<AddDataWindow>();
@@ -40,7 +39,6 @@ namespace AppWeather
             services.AddTransient<DeleteDataWindow>();
             services.AddTransient<FiltrationWindow>();
 
-            // Register ViewModels
             services.AddSingleton<MainViewModel>();
             services.AddTransient<AuthorizationViewModel>();
             services.AddTransient<AddDataViewModel>();

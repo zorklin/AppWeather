@@ -1,12 +1,47 @@
 ﻿<Window x:Class="AppWeather.Presentation.Views.AddDataWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AppWeather.Presentation.Views"
-        mc:Ignorable="d"
-        Title="AddDataWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Додати прогноз погоди" Height="300" Width="400"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Дата -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="Дата (рррр-мм-дд):"/>
+            <TextBox Text="{Binding Date, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Text="{Binding DateError}" Foreground="Red" FontSize="12"/>
+        </StackPanel>
+
+        <!-- Температура -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,10">
+            <TextBlock Text="Температура:"/>
+            <TextBox Text="{Binding Temperature, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Text="{Binding TemperatureError}" Foreground="Red" FontSize="12"/>
+        </StackPanel>
+
+        <!-- Тиск -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,10">
+            <TextBlock Text="Тиск:"/>
+            <TextBox Text="{Binding Pressure, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Text="{Binding PressureError}" Foreground="Red" FontSize="12"/>
+        </StackPanel>
+
+        <!-- Опади -->
+        <StackPanel Grid.Row="3" Margin="0,0,0,10">
+            <TextBlock Text="Опади (так/ні):"/>
+            <TextBox Text="{Binding Precipitation, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Text="{Binding PrecipitationError}" Foreground="Red" FontSize="12"/>
+        </StackPanel>
+
+        <!-- Кнопка -->
+        <Button Grid.Row="4" Content="Додати" HorizontalAlignment="Right" Padding="10,5"
+                Command="{Binding AddCommand}" />
     </Grid>
 </Window>

@@ -1,22 +1,20 @@
 ﻿using AppWeather.Common;
 using AppWeather.Models;
 using AppWeather.Services.Interfaces;
-using AppWeather.Services.Implementations;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows;
 using AppWeather.Presentation.Views;
-using DocumentFormat.OpenXml.Wordprocessing;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace AppWeather.Presentation.ViewModels
 {
-    public class FiltrationViewModel : BaseViewModel
+    public partial class FiltrationViewModel : ObservableRecipient
     {
         private readonly IWeatherService _weatherService;
         private readonly IMessageService _messageService;
         private readonly IWeatherMapper _weatherMapper;
         private readonly INavigationService _navigationService;
         private readonly MainViewModel _mainViewModel;
+        public WeatherFilterGui FilterGui { get; set; } = new WeatherFilterGui();
 
         public FiltrationViewModel(
             IWeatherService weatherService,
@@ -30,28 +28,26 @@ namespace AppWeather.Presentation.ViewModels
             _weatherMapper = weatherMapper ?? throw new ArgumentNullException(nameof(weatherMapper));
             _mainViewModel = mainViewModel ?? throw new ArgumentNullException(nameof(mainViewModel));
             _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
-            FilterCommand = new RelayCommand(async _ => await FilterAsync());
+
         }
-        public WeatherFilterGui FilterGui { get; set; } = new WeatherFilterGui();
 
-        public RelayCommand FilterCommand { get; }
-
-        private async Task FilterAsync()
-            {
+        [RelayCommand]
+        private async Task Filter()
+        {
             var filter = new WeatherFilter();
 
             try
             {
-                filter.StartDate = FilterGui.StartDate.HasValue ? DateOnly.FromDateTime(FilterGui.StartDate.Value) : null;
-                filter.EndDate = FilterGui.EndDate.HasValue ? DateOnly.FromDateTime(FilterGui.EndDate.Value) : null;
+                filter.StartDate = FilterGui.StartDate is DateTime start ? DateOnly.FromDateTime(start) : null;
+                filter.EndDate = FilterGui.EndDate is DateTime end ? DateOnly.FromDateTime(end) : null;
 
-                filter.MinTemperature = FilterGui.MinTemperature.HasValue ? FilterGui.MinTemperature.Value : null;
-                filter.MaxTemperature = FilterGui.MaxTemperature.HasValue ? FilterGui.MaxTemperature.Value : null;
+                filter.MinTemperature = FilterGui.MinTemperature;
+                filter.MaxTemperature = FilterGui.MaxTemperature;
 
                 filter.Precipitation = BoolParser.ParseNullableBool(FilterGui.Precipitation);
 
-                filter.MinPressure = FilterGui.MinPressure.HasValue ? FilterGui.MinPressure.Value : null;
-                filter.MaxPressure = FilterGui.MaxPressure.HasValue ? FilterGui.MaxPressure.Value : null;
+                filter.MinPressure = FilterGui.MinPressure;
+                filter.MaxPressure = FilterGui.MaxPressure;
             }
             catch (FormatException ex)
             {

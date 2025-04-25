@@ -1,8 +1,12 @@
 ﻿<Window x:Class="AppWeather.Presentation.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:AppWeather.Common"
         Title="Прогноз погоди"
         Height="600" Width="800">
+    <Window.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,8 +18,13 @@
                 <MenuItem Header="Отримати з сервера" Command="{Binding FetchFromServerCommand}"/>
                 <MenuItem Header="Зберегти локально" Command="{Binding SaveLocallyCommand}"/>
             </MenuItem>
-            <MenuItem Header="Пошук" Command="{Binding SearchCommand}"/>
-            <MenuItem Header="Авторизація" Command="{Binding AuthorizationCommand}"/>
+            <MenuItem Header="Пошук" Command="{Binding OpenSearchWindowCommand}"/>
+            <MenuItem Header="Авторизація" Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Invert}" Command="{Binding OpenAuthorizationWindowCommand}" />
+            <MenuItem Header="Дані" Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVisibilityConverter}}">
+                <MenuItem Header="Додати" Command="{Binding AddDataCommand}"/>
+                <MenuItem Header="Змінити" Command="{Binding ChangeDataCommand}"/>
+                <MenuItem Header="Видалити" Command="{Binding DeleteDataCommand}"/>
+            </MenuItem>
         </Menu>
 
         <DataGrid ItemsSource="{Binding WeatherForecasts}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="10" Grid.Row="1">

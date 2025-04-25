@@ -6,6 +6,6 @@
         public string Temperature { get; set; } = string.Empty;
         public string Precipitation { get; set; } = string.Empty;
         public string Pressure { get; set; } = string.Empty;
-        public Weather weather { get; set; } 
+        //public Weather weather { get; set; } 
     }
 }
