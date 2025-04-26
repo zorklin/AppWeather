@@ -28,10 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Presentation\styles\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Resources\Images\thermometer.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

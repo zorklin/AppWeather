@@ -11,11 +11,8 @@ namespace AppWeather.Presentation.ViewModels
         private readonly IInputParserService _parserService;
         private readonly MainViewModel _mainViewModel;
 
-        [ObservableProperty]
-        private string date = "";
-
-        [ObservableProperty]
-        private string? dateError;
+        [ObservableProperty] private string date = "";
+        [ObservableProperty] private string? dateError;
 
         public DeleteDataViewModel(
             IWeatherService weatherService,

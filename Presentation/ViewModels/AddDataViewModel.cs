@@ -3,8 +3,6 @@ using AppWeather.Models;
 using AppWeather.Services.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Threading.Tasks;
 
 namespace AppWeather.Presentation.ViewModels
 {
@@ -56,7 +54,7 @@ namespace AppWeather.Presentation.ViewModels
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(tempErr) || !string.IsNullOrWhiteSpace(pressureErr) || !string.IsNullOrWhiteSpace(precipErr))
+            if (!string.IsNullOrWhiteSpace(tempErr) ||!string.IsNullOrWhiteSpace(pressureErr) || !string.IsNullOrWhiteSpace(precipErr))
             {
                 _messageService.ShowMessage(tempErr ?? pressureErr ?? precipErr!, "Помилка у введенні");
                 return;

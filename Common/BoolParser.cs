@@ -14,7 +14,7 @@
             if (input is "ні" or "false")
                 return false;
 
-            throw new FormatException($"Неможливо конвертувати рядок '{input}' в логічне значення.");
+            throw new FormatException($"Неможливо конвертувати рядок в логічне значення.");
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using AppWeather.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System.Windows;
 
 namespace AppWeather.Infrastructure
 {

@@ -1,43 +1,133 @@
 ﻿<Window x:Class="AppWeather.Presentation.Views.FiltrationWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Фільтрація" Height="550" Width="400"
-        WindowStartupLocation="CenterScreen">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="20">
-            <TextBlock Text="Початкова дата:"/>
-            <TextBox Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="{Binding StartDateError}" Foreground="Red" FontSize="12"/>
+        Title="Фільтрація" Height="700" Width="400"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Background="White">
+        <Border Padding="20">
+            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="340">
 
-            <TextBlock Text="Кінцева дата:" Margin="0,10,0,0"/>
-            <TextBox Text="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="{Binding EndDateError}" Foreground="Red" FontSize="12"/>
+                <StackPanel Margin="0,0,0,12">
+                    <TextBlock Text="Початкова дата (РРРР-ММ-ДД):" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                    <Border CornerRadius="6" BorderBrush="#ccc" BorderThickness="1" Background="White">
+                        <TextBox Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" 
+                                 Height="30" Padding="8,2" FontSize="13" 
+                                 BorderThickness="0" Background="Transparent" 
+                                 VerticalContentAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding StartDateError}" Foreground="Red" FontSize="11" Margin="5,1,0,0"/>
+                </StackPanel>
 
-            <TextBlock Text="Мінімальна температура:" Margin="0,10,0,0"/>
-            <TextBox Text="{Binding MinTemperature, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="{Binding MinTemperatureError}" Foreground="Red" FontSize="12"/>
+                <StackPanel Margin="0,0,0,12">
+                    <TextBlock Text="Кінцева дата (РРРР-ММ-ДД):" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                    <Border CornerRadius="6" BorderBrush="#ccc" BorderThickness="1" Background="White">
+                        <TextBox Text="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}" 
+                                 Height="30" Padding="8,2" FontSize="13" 
+                                 BorderThickness="0" Background="Transparent" 
+                                 VerticalContentAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding EndDateError}" Foreground="Red" FontSize="11" Margin="5,1,0,0"/>
+                </StackPanel>
 
-            <TextBlock Text="Максимальна температура:" Margin="0,10,0,0"/>
-            <TextBox Text="{Binding MaxTemperature, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="{Binding MaxTemperatureError}" Foreground="Red" FontSize="12"/>
+                <StackPanel Margin="0,0,0,12">
+                    <TextBlock Text="Мінімальна температура:" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                    <Border CornerRadius="6" BorderBrush="#ccc" BorderThickness="1" Background="White">
+                        <TextBox Text="{Binding MinTemperature, UpdateSourceTrigger=PropertyChanged}" 
+                                 Height="30" Padding="8,2" FontSize="13" 
+                                 BorderThickness="0" Background="Transparent" 
+                                 VerticalContentAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding MinTemperatureError}" Foreground="Red" FontSize="11" Margin="5,1,0,0"/>
+                </StackPanel>
 
-            <TextBlock Text="Опади (так/ні):" Margin="0,10,0,0"/>
-            <TextBox Text="{Binding Precipitation, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="{Binding PrecipitationError}" Foreground="Red" FontSize="12"/>
+                <StackPanel Margin="0,0,0,12">
+                    <TextBlock Text="Максимальна температура:" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                    <Border CornerRadius="6" BorderBrush="#ccc" BorderThickness="1" Background="White">
+                        <TextBox Text="{Binding MaxTemperature, UpdateSourceTrigger=PropertyChanged}" 
+                                 Height="30" Padding="8,2" FontSize="13" 
+                                 BorderThickness="0" Background="Transparent" 
+                                 VerticalContentAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding MaxTemperatureError}" Foreground="Red" FontSize="11" Margin="5,1,0,0"/>
+                </StackPanel>
 
-            <TextBlock Text="Мінімальний тиск:" Margin="0,10,0,0"/>
-            <TextBox Text="{Binding MinPressure, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="{Binding MinPressureError}" Foreground="Red" FontSize="12"/>
+                <StackPanel Margin="0,0,0,12">
+                    <TextBlock Text="Опади (так/ні):" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                    <Border CornerRadius="6" BorderBrush="#ccc" BorderThickness="1" Background="White">
+                        <TextBox Text="{Binding Precipitation, UpdateSourceTrigger=PropertyChanged}" 
+                                 Height="30" Padding="8,2" FontSize="13" 
+                                 BorderThickness="0" Background="Transparent" 
+                                 VerticalContentAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding PrecipitationError}" Foreground="Red" FontSize="11" Margin="5,1,0,0"/>
+                </StackPanel>
 
-            <TextBlock Text="Максимальний тиск:" Margin="0,10,0,0"/>
-            <TextBox Text="{Binding MaxPressure, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Text="{Binding MaxPressureError}" Foreground="Red" FontSize="12"/>
+                <StackPanel Margin="0,0,0,12">
+                    <TextBlock Text="Мінімальний тиск:" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                    <Border CornerRadius="6" BorderBrush="#ccc" BorderThickness="1" Background="White">
+                        <TextBox Text="{Binding MinPressure, UpdateSourceTrigger=PropertyChanged}" 
+                                 Height="30" Padding="8,2" FontSize="13" 
+                                 BorderThickness="0" Background="Transparent" 
+                                 VerticalContentAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding MinPressureError}" Foreground="Red" FontSize="11" Margin="5,1,0,0"/>
+                </StackPanel>
 
-            <Button Content="Фільтрувати"
-                    Command="{Binding FilterCommand}"
-                    HorizontalAlignment="Right"
-                    Padding="10,5"
-                    Margin="0,20,0,0" />
-        </StackPanel>
+                <StackPanel Margin="0,0,0,20">
+                    <TextBlock Text="Максимальний тиск:" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,2"/>
+                    <Border CornerRadius="6" BorderBrush="#ccc" BorderThickness="1" Background="White">
+                        <TextBox Text="{Binding MaxPressure, UpdateSourceTrigger=PropertyChanged}" 
+                                 Height="30" Padding="8,2" FontSize="13" 
+                                 BorderThickness="0" Background="Transparent" 
+                                 VerticalContentAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding MaxPressureError}" Foreground="Red" FontSize="11" Margin="5,1,0,0"/>
+                </StackPanel>
+
+                <Button Content="Фільтрувати"
+                        Command="{Binding FilterCommand}"
+                        Width="180"
+                        Height="42"
+                        Background="#0078D7"
+                        Foreground="White"
+                        BorderBrush="#0078D7"
+                        BorderThickness="0"
+                        FontWeight="Bold"
+                        FontSize="14"
+                        Cursor="Hand"
+                        HorizontalAlignment="Center">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#0078D7"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="BorderBrush" Value="#0078D7"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                                CornerRadius="8" 
+                                                BorderThickness="0">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#0063B1"/>
+                                    <Setter Property="BorderBrush" Value="#0063B1"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+            </StackPanel>
+        </Border>
     </ScrollViewer>
 </Window>

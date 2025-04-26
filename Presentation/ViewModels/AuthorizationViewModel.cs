@@ -3,7 +3,7 @@ using AppWeather.Models;
 using AppWeather.Presentation.Views;
 using AppWeather.Services.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 
 namespace AppWeather.Presentation.ViewModels
 {
@@ -19,8 +19,6 @@ namespace AppWeather.Presentation.ViewModels
         [ObservableProperty]
         private string _password = "";
 
-        public ICommand LoginCommand { get; }
-
         public AuthorizationViewModel(
             IAdminService adminService,
             IUserSessionService userSessionService,
@@ -32,10 +30,10 @@ namespace AppWeather.Presentation.ViewModels
             _userSessionService = userSessionService;
             _navigationService = navigationService;
             _messageService = messageService;
-            LoginCommand = new RelayCommand(async _ => await LoginAsync());
         }
 
 
+        [RelayCommand]
         private async Task LoginAsync()
         {
             if (string.IsNullOrWhiteSpace(Username + Password))
